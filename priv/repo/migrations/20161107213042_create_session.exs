@@ -8,7 +8,6 @@ defmodule LinksApi.Repo.Migrations.CreateSession do
 
       timestamps()
     end
-
     create index(:sessions, [:token])
   end
 end

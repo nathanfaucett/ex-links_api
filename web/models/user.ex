@@ -12,6 +12,7 @@ defmodule LinksApi.User do
     field :password, :string, virtual: true
 
     has_many :sessions, LinksApi.Session
+    has_many :posts, LinksApi.Post
 
     timestamps()
   end

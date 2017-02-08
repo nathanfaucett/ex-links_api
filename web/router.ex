@@ -17,5 +17,8 @@ defmodule LinksApi.Router do
     resources "/sessions", SessionController, only: [:create]
     delete "/sessions", SessionController, :delete
     get "/sessions/create_from_token", SessionController, :create_from_token
+
+    #Posts
+    resources "/posts", PostController
   end
 end

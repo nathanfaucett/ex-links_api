@@ -4,7 +4,7 @@ defmodule LinksApi.Mixfile do
   def project do
     [app: :links_api,
      version: "0.0.1",
-     elixir: "~> 1.2",
+     elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -35,17 +35,17 @@ defmodule LinksApi.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
+    [{:phoenix, "~> 1.2"},
      {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0"},
-     {:postgrex, ">= 0.0.0"},
-     {:gettext, "~> 0.11"},
-     {:comeonin, "~> 2.0"},
+     {:phoenix_ecto, "~> 3.2"},
+     {:postgrex, ">= 0.13.0"},
+     {:gettext, "~> 0.13"},
+     {:comeonin, "~> 3.0"},
      {:secure_random, "~> 0.5"},
-     {:cors_plug, "~> 1.1"},
-     {:bamboo, "~> 0.7"},
-     {:bamboo_smtp, "~> 1.2.1"},
-     {:cowboy, "~> 1.0"},
+     {:cors_plug, "~> 1.2"},
+     {:bamboo, "~> 0.8"},
+     {:bamboo_smtp, "~> 1.2"},
+     {:cowboy, "~> 1.1"},
      {:poison, "~> 2.0"}]
   end
 
