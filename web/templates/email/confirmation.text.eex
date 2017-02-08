@@ -1,0 +1,3 @@
+Welcome to Links <%= @email %>!
+
+Follow this link to confirm you email http://localhost:4000/#/users/confirm/<%= @token %>

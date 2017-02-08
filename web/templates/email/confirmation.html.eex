@@ -1,0 +1,8 @@
+<p>Welcome to Links <%= @email %>!</p>
+
+<p>
+  Click here to confirm you email
+  <a href="http://localhost:4000/#/users/confirm/<%= @token %>">
+    <%= @email %>
+  </a>
+</p>
