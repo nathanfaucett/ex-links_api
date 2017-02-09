@@ -5,6 +5,7 @@ defmodule LinksApi.PostController do
 
   def index(conn, _params) do
     posts = Repo.all(Post)
+      |> Repo.preload([:user, :subject, :tags])
     render(conn, "index.json", post: posts)
   end
 
@@ -13,6 +14,8 @@ defmodule LinksApi.PostController do
 
     case Repo.insert(changeset) do
       {:ok, post} ->
+        post = post
+          |> Repo.preload([:user, :subject, :tags])
         conn
         |> put_status(:created)
         |> put_resp_header("location", post_path(conn, :show, post))
@@ -26,18 +29,18 @@ defmodule LinksApi.PostController do
 
   def show(conn, %{"id" => id}) do
     post = Repo.get!(Post, id)
+      |> Repo.preload([:user, :subject, :tags])
     render(conn, "show.json", post: post)
   end
 
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Repo.get!(Post, id)
-      |> Repo.preload([:user, :link, :subject, :tags])
     changeset = Post.changeset(post, post_params)
 
     case Repo.update(changeset) do
       {:ok, post} ->
         post = post
-          |> Repo.preload([:user, :link, :subject, :tags])
+          |> Repo.preload([:user, :subject, :tags])
         render(conn, "show.json", post: post)
       {:error, changeset} ->
         conn

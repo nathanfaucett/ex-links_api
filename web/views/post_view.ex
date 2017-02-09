@@ -12,9 +12,9 @@ defmodule LinksApi.PostView do
   def render("post.json", %{post: post}) do
     %{id: post.id,
       title: post.title,
-      user: post.user,
-      subject: post.subject,
-      link: post.link,
-      tags: post.tags}
+      href: post.href,
+      user_id: nil,
+      subject_id: nil,
+      tags: []}
   end
 end

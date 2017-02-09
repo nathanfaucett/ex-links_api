@@ -1,4 +1,4 @@
-# LinksApi
+# LinksApi [![Build Status](https://travis-ci.org/nathanfaucett/ex-links_api.svg?branch=master)](https://travis-ci.org/nathanfaucett/ex-links_api)
 
 user voted links api
 

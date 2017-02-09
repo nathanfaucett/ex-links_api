@@ -12,32 +12,11 @@
 
 alias LinksApi.Repo
 alias LinksApi.User
-alias LinksApi.Post
-alias LinksApi.Link
-alias LinksApi.Tag
-alias LinksApi.Subject
 
 
-user =Repo.insert!(User.registration_changeset(%User{}, %{
+Repo.insert!(User.registration_changeset(%User{}, %{
   email: "example@domain.com",
   password: "password",
   confirmed: true,
   confirmation_token: nil
 }))
-link = Repo.insert!(%Link{
-  href: "http://example.com"
-})
-tag = Repo.insert!(%Tag{
-  name: "Tag"
-})
-subject = Repo.insert!(%Subject{
-  name: "Subject"
-})
-
-Repo.insert!(%Post{
-  title: "Title",
-  user: user,
-  link: link,
-  subject: subject,
-  tags: [tag]
-})

@@ -3,14 +3,11 @@ defmodule LinksApi.PostTest do
 
   alias LinksApi.Post
 
-  @valid_attrs %{title: "Title", user_id: 1, link_id: 1, subject_id: 1}
+  @valid_attrs %{title: "Title", href: "http://www.example.com", user_id: 1, subject_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do
-    tag = LinksApi.Repo.get!(LinksApi.Tag, 1)
     changeset = Post.changeset(%Post{}, @valid_attrs)
-      |> put_assoc(:tags, [tag])
-
     assert changeset.valid?
   end
 
