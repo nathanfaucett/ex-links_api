@@ -33,7 +33,7 @@ defmodule LinksApi.UserControllerTest do
 
     session = create_conn.assigns[:session]
     user = Repo.get_by!(User, id: session.user_id)
-    conn = put_req_header(conn, "x-ibe-user.token", session.token)
+    conn = put_req_header(conn, "x-links-user.token", session.token)
 
     conn = post conn, user_path(conn, :confirm, user.confirmation_token), %{}
     assert json_response(conn, 204)
@@ -47,7 +47,7 @@ defmodule LinksApi.UserControllerTest do
     create_conn = post conn, session_path(conn, :create), user: @valid_confirmation_attrs
 
     session = create_conn.assigns[:session]
-    conn = put_req_header(conn, "x-ibe-user.token", session.token)
+    conn = put_req_header(conn, "x-links-user.token", session.token)
 
     conn = post conn, user_path(conn, :resend_confirmation_token), %{}
     assert json_response(conn, 204)
