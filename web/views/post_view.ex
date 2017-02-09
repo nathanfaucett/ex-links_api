@@ -13,8 +13,8 @@ defmodule LinksApi.PostView do
     %{id: post.id,
       title: post.title,
       href: post.href,
-      user_id: nil,
-      subject_id: nil,
-      tags: []}
+      user_id: post.user_id,
+      subject_id: post.subject_id,
+      tags: post.tags}
   end
 end

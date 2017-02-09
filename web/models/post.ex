@@ -17,9 +17,11 @@ defmodule LinksApi.Post do
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :href])
+    |> cast(params, [:title, :user_id, :subject_id, :href])
+    |> foreign_key_constraint(:user_id)
+    |> foreign_key_constraint(:subject_id)
     |> validate_url(:href)
-    |> validate_required([:title, :href])
+    |> validate_required([:title, :user_id, :subject_id, :href])
   end
 
 
