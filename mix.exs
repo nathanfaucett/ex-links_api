@@ -19,7 +19,7 @@ defmodule LinksApi.Mixfile do
   def application do
     [mod: {LinksApi, []},
       applications: [
-       :phoenix, :phoenix_html, :phoenix_pubsub,
+       :phoenix, :phoenix_pubsub,
        :cowboy, :logger,
        :gettext,
        :phoenix_ecto, :postgrex,
