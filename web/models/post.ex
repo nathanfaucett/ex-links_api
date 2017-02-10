@@ -12,6 +12,14 @@ defmodule LinksApi.Post do
     timestamps()
   end
 
+  def put_tags(struct, tags \\ []) do
+    if Enum.empty?(tags) do
+      put_assoc(struct, :tags, LinksApi.Tag.get_tags(tags))
+    else
+      struct
+    end
+  end
+
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
@@ -22,6 +30,7 @@ defmodule LinksApi.Post do
     |> foreign_key_constraint(:subject_id)
     |> validate_url(:href)
     |> validate_required([:title, :user_id, :subject_id, :href])
+    |> put_tags(Map.get(params, :tags, []))
   end
 
 

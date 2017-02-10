@@ -19,6 +19,8 @@ defmodule LinksApi.PostControllerTest do
     valid_attrs = @valid_attrs
       |> Map.put(:user_id, user.id)
       |> Map.put(:subject_id, subject.id)
+      |> Map.put(:tags, ["PostTestTag"])
+
 
     {:ok, conn: put_req_header(conn, "accept", "application/json"), user: user, subject: subject, valid_attrs: valid_attrs}
   end
@@ -50,7 +52,7 @@ defmodule LinksApi.PostControllerTest do
   test "creates and renders resource when data is valid", %{conn: conn, valid_attrs: valid_attrs} do
     conn = post conn, post_path(conn, :create), post: valid_attrs
     assert json_response(conn, 201)["data"]["id"]
-    assert Repo.get_by(Post, valid_attrs)
+    assert Repo.get_by(Post, @valid_attrs)
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
@@ -62,7 +64,7 @@ defmodule LinksApi.PostControllerTest do
     post = Repo.insert!(Post.changeset(%Post{}, valid_attrs))
     conn = put conn, post_path(conn, :update, post), post: valid_attrs
     assert json_response(conn, 200)["data"]["id"]
-    assert Repo.get_by(Post, valid_attrs)
+    assert Repo.get_by(Post, @valid_attrs)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn, valid_attrs: valid_attrs} do
