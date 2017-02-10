@@ -3,7 +3,7 @@ defmodule LinksApi.PostTest do
 
   alias LinksApi.Post
 
-  @valid_attrs %{title: "Title", href: "http://www.example.com", user_id: 1, subject_id: 1}
+  @valid_attrs %{title: "Title", href: "http://www.example.com", user_id: 1}
   @invalid_attrs %{}
 
   test "changeset with valid attributes" do

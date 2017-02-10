@@ -12,6 +12,7 @@ defmodule LinksApi.Repo.Migrations.CreatePost do
       timestamps()
     end
 
+    create unique_index(:posts, [:href])
     create index(:posts, [:user_id])
     create index(:posts, [:subject_id])
   end

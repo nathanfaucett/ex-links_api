@@ -3,6 +3,8 @@ defmodule LinksApi.PostController do
 
   alias LinksApi.Post
 
+  plug LinksApi.Plug.Authenticate when action in [:create, :update, :delete]
+
   def index(conn, _params) do
     posts = Repo.all(Post)
       |> Repo.preload([:user, :subject, :tags])
@@ -10,6 +12,8 @@ defmodule LinksApi.PostController do
   end
 
   def create(conn, %{"post" => post_params}) do
+    user = conn.assigns[:current_user]
+    post_params = Map.put(post_params, "user_id", user.id)
     changeset = Post.changeset(%Post{}, post_params)
 
     case Repo.insert(changeset) do
@@ -36,27 +40,38 @@ defmodule LinksApi.PostController do
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Repo.get!(Post, id)
       |> Repo.preload([:user, :subject, :tags])
-    changeset = Post.changeset(post, post_params)
 
-    case Repo.update(changeset) do
-      {:ok, post} ->
-        post = post
-          |> Repo.preload([:user, :subject, :tags])
-        render(conn, "show.json", post: post)
-      {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(LinksApi.ChangesetView, "error.json", changeset: changeset)
+    if post.user.id == conn.assigns[:current_user].id do
+      changeset = Post.changeset(post, post_params)
+
+      case Repo.update(changeset) do
+        {:ok, post} ->
+          post = post
+            |> Repo.preload([:user, :subject, :tags])
+          render(conn, "show.json", post: post)
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> render(LinksApi.ChangesetView, "error.json", changeset: changeset)
+      end
+    else
+      conn
+        |> put_status(:unauthorized)
+        |> render(LinksApi.ErrorView, "401.json")
     end
   end
 
   def delete(conn, %{"id" => id}) do
     post = Repo.get!(Post, id)
+      |> Repo.preload(:user)
 
-    # Here we use delete! (with a bang) because we expect
-    # it to always work (and if it does not, it will raise).
-    Repo.delete!(post)
-
-    send_resp(conn, :no_content, "")
+    if post.user.id == conn.assigns[:current_user].id do
+      Repo.delete!(post)
+      send_resp(conn, :no_content, "")
+    else
+      conn
+        |> put_status(:unauthorized)
+        |> render(LinksApi.ErrorView, "401.json")
+    end
   end
 end

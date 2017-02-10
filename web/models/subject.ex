@@ -8,6 +8,26 @@ defmodule LinksApi.Subject do
     timestamps()
   end
 
+  def create_if_not_exists(name) do
+    query = from(t in LinksApi.Subject,
+          where: t.name == ^name)
+    subject = LinksApi.Repo.one(query)
+
+    if subject == nil do
+      LinksApi.Repo.insert(LinksApi.Subject
+        .changeset(%LinksApi.Subject { name: name }))
+    else
+      {:ok, subject}
+    end
+  end
+
+  def get_subject(subject \\ "All") do
+    case create_if_not_exists(subject) do
+      {:ok, subject} -> subject
+      {:err, _} -> nil
+    end
+  end
+
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """

@@ -20,17 +20,21 @@ defmodule LinksApi.Post do
     end
   end
 
+  def put_subject(struct, subject \\ "All") do
+    put_assoc(struct, :subject, LinksApi.Subject.get_subject(subject))
+  end
+
   @doc """
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
     struct
-    |> cast(params, [:title, :user_id, :subject_id, :href])
+    |> cast(params, [:title, :user_id, :href])
     |> foreign_key_constraint(:user_id)
-    |> foreign_key_constraint(:subject_id)
     |> validate_url(:href)
-    |> validate_required([:title, :user_id, :subject_id, :href])
+    |> validate_required([:title, :user_id, :href])
     |> put_tags(Map.get(params, :tags, []))
+    |> put_subject(Map.get(params, :subject, "All"))
   end
 
 

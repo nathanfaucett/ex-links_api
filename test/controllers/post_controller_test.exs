@@ -3,26 +3,31 @@ defmodule LinksApi.PostControllerTest do
 
   alias LinksApi.Post
 
-  @valid_attrs %{title: "Title", href: "http://www.example.com"}
-  @invalid_attrs %{href: "heep:\\\\badhref.com"}
+  @valid_attrs %{:title => "Title", :href => "http://www.example.com"}
+  @invalid_attrs %{:href => "heep:\\\\badhref.com"}
+
+  @user_attrs %{
+    email: "post_test_user@domain.com",
+    password: "password",
+    confirmed: true,
+    confirmation_token: nil
+  }
 
   setup %{conn: conn} do
-    user = Repo.insert!(LinksApi.User.registration_changeset(%LinksApi.User{}, %{
-      email: "post_test_user@domain.com",
-      password: "password",
-      confirmed: true,
-      confirmation_token: nil
-    }))
-    subject = Repo.insert!(%LinksApi.Subject{
-      name: "Post Test Subject"
-    })
+    user = Repo.insert!(LinksApi.User.registration_changeset(%LinksApi.User{}, @user_attrs))
     valid_attrs = @valid_attrs
       |> Map.put(:user_id, user.id)
-      |> Map.put(:subject_id, subject.id)
       |> Map.put(:tags, ["PostTestTag"])
 
+    create_conn = post conn, session_path(conn, :create), user: @user_attrs
+    session = create_conn.assigns[:session]
 
-    {:ok, conn: put_req_header(conn, "accept", "application/json"), user: user, subject: subject, valid_attrs: valid_attrs}
+    conn = conn
+      |> assign(:current_user, user)
+      |> put_req_header("accept", "application/json")
+      |> put_req_header("x-links-user.token", session.token)
+
+    {:ok, conn: conn, user: user, valid_attrs: valid_attrs}
   end
 
   test "lists all entries on index", %{conn: conn} do

@@ -12,6 +12,7 @@
 
 alias LinksApi.Repo
 alias LinksApi.User
+alias LinksApi.Subject
 
 
 Repo.insert!(User.registration_changeset(%User{}, %{
@@ -20,3 +21,7 @@ Repo.insert!(User.registration_changeset(%User{}, %{
   confirmed: true,
   confirmation_token: nil
 }))
+
+Repo.insert!(%Subject{
+  name: "All"
+})
