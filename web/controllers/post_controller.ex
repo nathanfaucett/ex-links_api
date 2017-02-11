@@ -20,6 +20,7 @@ defmodule LinksApi.PostController do
       {:ok, post} ->
         post = post
           |> Repo.preload([:user, :subject, :tags])
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", post_path(conn, :show, post))

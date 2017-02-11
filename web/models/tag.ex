@@ -3,14 +3,14 @@ defmodule LinksApi.Tag do
 
   schema "tags" do
     field :name, :string
-    many_to_many :posts, LinksApi.Post, join_through: "posts_tags"
+    many_to_many :posts, LinksApi.Post, join_through: LinksApi.PostsTags, on_delete: :nothing
 
     timestamps()
   end
 
   def create_if_not_exists(name) do
-    query = from(t in LinksApi.Tag,
-          where: t.name == ^name)
+    query = from t in LinksApi.Tag,
+          where: t.name == ^name
     tag = LinksApi.Repo.one(query)
 
     if tag == nil do
@@ -22,16 +22,14 @@ defmodule LinksApi.Tag do
   end
 
   def get_tags(tags \\ []) do
-    Enum.filter_map(
-      tags,
-      fn(tag) -> tag != nil end,
-      fn(tag) ->
+    tags
+      |> Enum.map(fn(tag) ->
         case create_if_not_exists(tag) do
           {:ok, tag} -> tag
           {:err, _} -> nil
         end
-      end
-    )
+      end)
+      |> Enum.filter(fn(tag) -> tag != nil end)
   end
 
   @doc """

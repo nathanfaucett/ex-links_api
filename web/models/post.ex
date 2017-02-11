@@ -1,26 +1,33 @@
 defmodule LinksApi.Post do
+  require Logger
   use LinksApi.Web, :model
 
   schema "posts" do
     field :title, :string
     field :href, :string
 
-    belongs_to :user, LinksApi.User
-    belongs_to :subject, LinksApi.Subject
-    many_to_many :tags, LinksApi.Tag, join_through: "posts_tags"
+    belongs_to :user, LinksApi.User, on_replace: :nilify
+    belongs_to :subject, LinksApi.Subject, on_replace: :nilify
+    many_to_many :tags, LinksApi.Tag, join_through: LinksApi.PostsTags, on_delete: :nothing
 
     timestamps()
   end
 
-  def put_tags(struct, tags \\ []) do
+  def put_tags(struct, params) do
+    tags = Map.get(params, :tags)
+    tags = if tags == nil do Map.get(params, "tags", []) else tags end
+
     if Enum.empty?(tags) do
-      put_assoc(struct, :tags, LinksApi.Tag.get_tags(tags))
-    else
       struct
+    else
+      put_assoc(struct, :tags, LinksApi.Tag.get_tags(tags))
     end
   end
 
-  def put_subject(struct, subject \\ "All") do
+  def put_subject(struct, params) do
+    subject = Map.get(params, :subject)
+    subject = if subject == nil do Map.get(params, "subject", []) else subject end
+
     put_assoc(struct, :subject, LinksApi.Subject.get_subject(subject))
   end
 
@@ -28,13 +35,19 @@ defmodule LinksApi.Post do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
+
+    Logger.info Map.get(params, "tags")
+
     struct
-    |> cast(params, [:title, :user_id, :href])
-    |> foreign_key_constraint(:user_id)
-    |> validate_url(:href)
-    |> validate_required([:title, :user_id, :href])
-    |> put_tags(Map.get(params, :tags, []))
-    |> put_subject(Map.get(params, :subject, "All"))
+      |> cast(params, [:title, :user_id, :href])
+      |> foreign_key_constraint(:user_id)
+      |> validate_url(:href)
+      |> unique_constraint(:href)
+      |> validate_required([:title, :user_id, :href])
+      |> put_tags(params)
+      |> put_subject(params)
+      |> foreign_key_constraint(:subject)
+      |> foreign_key_constraint(:tags)
   end
 
 

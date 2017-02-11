@@ -3,21 +3,27 @@ defmodule LinksApi.PostControllerTest do
 
   alias LinksApi.Post
 
-  @valid_attrs %{:title => "Title", :href => "http://www.example.com"}
-  @invalid_attrs %{:href => "heep:\\\\badhref.com"}
+  @valid_attrs %{
+    title: "Title",
+    href: "http://www.example.com",
+    subject: "PostConstrollerTestSubject",
+    tags: ["PostConstrollerTestTag"]}
+
+  @invalid_attrs %{
+    href: "heep:\\\\badhref.com",
+    subject: "PostConstrollerTestSubject",
+    tags: ["PostConstrollerTestTag"]}
 
   @user_attrs %{
-    email: "post_test_user@domain.com",
+    email: "post_controller_test_user@domain.com",
     password: "password",
     confirmed: true,
-    confirmation_token: nil
-  }
+    confirmation_token: nil}
 
   setup %{conn: conn} do
     user = Repo.insert!(LinksApi.User.registration_changeset(%LinksApi.User{}, @user_attrs))
     valid_attrs = @valid_attrs
       |> Map.put(:user_id, user.id)
-      |> Map.put(:tags, ["PostTestTag"])
 
     create_conn = post conn, session_path(conn, :create), user: @user_attrs
     session = create_conn.assigns[:session]
@@ -38,14 +44,15 @@ defmodule LinksApi.PostControllerTest do
   test "shows chosen resource", %{conn: conn, valid_attrs: valid_attrs} do
     post = Repo.insert!(Post.changeset(%Post{}, valid_attrs))
       |> Repo.preload([:user, :subject, :tags])
+
     conn = get conn, post_path(conn, :show, post)
     assert json_response(conn, 200)["data"] == %{
       "id" => post.id,
       "title" => post.title,
       "href" => post.href,
-      "user_id" => post.user.id,
-      "subject_id" => post.subject.id,
-      "tags" => post.tags}
+      "user" => post.user.email,
+      "subject" => post.subject.name,
+      "tags" => Enum.map(post.tags, fn(tag) -> tag.name end)}
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
@@ -56,8 +63,9 @@ defmodule LinksApi.PostControllerTest do
 
   test "creates and renders resource when data is valid", %{conn: conn, valid_attrs: valid_attrs} do
     conn = post conn, post_path(conn, :create), post: valid_attrs
-    assert json_response(conn, 201)["data"]["id"]
-    assert Repo.get_by(Post, @valid_attrs)
+    id = json_response(conn, 201)["data"]["id"]
+    assert id
+    assert Repo.get(Post, id)
   end
 
   test "does not create resource and renders errors when data is invalid", %{conn: conn} do
@@ -68,8 +76,9 @@ defmodule LinksApi.PostControllerTest do
   test "updates and renders chosen resource when data is valid", %{conn: conn, valid_attrs: valid_attrs} do
     post = Repo.insert!(Post.changeset(%Post{}, valid_attrs))
     conn = put conn, post_path(conn, :update, post), post: valid_attrs
-    assert json_response(conn, 200)["data"]["id"]
-    assert Repo.get_by(Post, @valid_attrs)
+    id = json_response(conn, 200)["data"]["id"]
+    assert id
+    assert Repo.get(Post, id)
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn, valid_attrs: valid_attrs} do

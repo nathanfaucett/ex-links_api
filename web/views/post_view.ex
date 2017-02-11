@@ -13,8 +13,8 @@ defmodule LinksApi.PostView do
     %{id: post.id,
       title: post.title,
       href: post.href,
-      user_id: post.user_id,
-      subject_id: post.subject_id,
-      tags: post.tags}
+      user: post.user.email,
+      subject: post.subject.name,
+      tags: render_many(post.tags, LinksApi.TagView, "tag.json")}
   end
 end

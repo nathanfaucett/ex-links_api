@@ -3,7 +3,7 @@ defmodule LinksApi.Subject do
 
   schema "subjects" do
     field :name, :string
-    has_many :posts, LinksApi.Post
+    has_many :posts, LinksApi.Post, on_delete: :nothing
 
     timestamps()
   end
