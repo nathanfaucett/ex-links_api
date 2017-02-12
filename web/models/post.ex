@@ -1,5 +1,4 @@
 defmodule LinksApi.Post do
-  require Logger
   use LinksApi.Web, :model
 
   schema "posts" do
@@ -14,8 +13,7 @@ defmodule LinksApi.Post do
   end
 
   def put_tags(struct, params) do
-    tags = Map.get(params, :tags)
-    tags = if tags == nil do Map.get(params, "tags", []) else tags end
+    tags = Map.get(params, :tags, Map.get(params, "tags", []))
 
     if Enum.empty?(tags) do
       struct
@@ -25,9 +23,13 @@ defmodule LinksApi.Post do
   end
 
   def put_subject(struct, params) do
-    subject = Map.get(params, :subject)
-    subject = if subject == nil do Map.get(params, "subject", []) else subject end
-
+    subject = String.strip Map.get(params, :subject, Map.get(params, "subject", "All"))
+    subject = if subject == "" do
+      "All"
+    else
+      subject
+    end
+    
     put_assoc(struct, :subject, LinksApi.Subject.get_subject(subject))
   end
 
@@ -35,9 +37,6 @@ defmodule LinksApi.Post do
   Builds a changeset based on the `struct` and `params`.
   """
   def changeset(struct, params \\ %{}) do
-
-    Logger.info Map.get(params, "tags")
-
     struct
       |> cast(params, [:title, :user_id, :href])
       |> foreign_key_constraint(:user_id)

@@ -2,13 +2,45 @@ defmodule LinksApi.PostController do
   use LinksApi.Web, :controller
 
   alias LinksApi.Post
+  alias LinksApi.Tag
+  alias LinksApi.Subject
+  alias LinksApi.PostsTags
 
   plug LinksApi.Plug.Authenticate when action in [:create, :update, :delete]
 
-  def index(conn, _params) do
-    posts = Repo.all(Post)
+  def index(conn, %{"page_size" => page_size, "offset" => offset}) do
+    post = from(p in Post,
+      limit: ^page_size,
+      offset: ^offset
+    )
+    |> Repo.all
+    |> Repo.preload([:user, :subject, :tags])
+
+    render(conn, "index.json", post: post)
+  end
+
+  def index(conn, %{"subject" => subject, "tags" => tags}) do
+    subject = Repo.get_by Subject, name: subject
+
+    tag_ids = Repo.all(from t in Tag,
+      where: t.name in ^tags)
+      |> Enum.map(fn(tag) -> tag.id end)
+
+    posts_tags_ids = Repo.all(from pt in PostsTags,
+      where: pt.tag_id in ^tag_ids)
+      |> Enum.map(fn(post_tag) -> post_tag.post_id end)
+
+    post = if subject != nil do
+        from p in Post,
+          where: p.subject_id == ^subject.id or p.id in ^posts_tags_ids
+      else
+        from p in Post,
+          where: p.id in ^posts_tags_ids
+      end
+      |> Repo.all
       |> Repo.preload([:user, :subject, :tags])
-    render(conn, "index.json", post: posts)
+
+    render(conn, "index.json", post: post)
   end
 
   def create(conn, %{"post" => post_params}) do

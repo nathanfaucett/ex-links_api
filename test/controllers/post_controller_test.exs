@@ -6,13 +6,13 @@ defmodule LinksApi.PostControllerTest do
   @valid_attrs %{
     title: "Title",
     href: "http://www.example.com",
-    subject: "PostConstrollerTestSubject",
-    tags: ["PostConstrollerTestTag"]}
+    subject: "PostControllerTestSubject",
+    tags: ["PostControllerTestTag"]}
 
   @invalid_attrs %{
     href: "heep:\\\\badhref.com",
-    subject: "PostConstrollerTestSubject",
-    tags: ["PostConstrollerTestTag"]}
+    subject: "PostControllerTestSubject",
+    tags: ["PostControllerTestTag"]}
 
   @user_attrs %{
     email: "post_controller_test_user@domain.com",
@@ -37,7 +37,14 @@ defmodule LinksApi.PostControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
-    conn = get conn, post_path(conn, :index)
+    conn = get conn, post_path(conn, :index, %{"page_size" => 20, "offset" => 0})
+    assert json_response(conn, 200)["data"] == []
+  end
+
+  test "lists all entries matching subject or tags", %{conn: conn} do
+    conn = get conn, post_path(conn, :index, %{
+      "subject" => "PostControllerTestSubject",
+      "tags" => ["PostControllerTestTag"]})
     assert json_response(conn, 200)["data"] == []
   end
 
@@ -50,7 +57,6 @@ defmodule LinksApi.PostControllerTest do
       "id" => post.id,
       "title" => post.title,
       "href" => post.href,
-      "user" => post.user.email,
       "subject" => post.subject.name,
       "tags" => Enum.map(post.tags, fn(tag) -> tag.name end)}
   end
