@@ -8,10 +8,14 @@ defmodule LinksApi.PostController do
 
   plug LinksApi.Plug.Authenticate when action in [:create, :update, :delete]
 
-  def index(conn, %{"page_size" => page_size, "offset" => offset}) do
+  def index(conn, %{
+    "page_size" => page_size,
+    "offset" => offset
+  }) do
     post = from(p in Post,
       limit: ^page_size,
-      offset: ^offset
+      offset: ^offset,
+      order_by: p.inserted_at
     )
     |> Repo.all
     |> Repo.preload([:user, :subject, :tags])
@@ -19,7 +23,12 @@ defmodule LinksApi.PostController do
     render(conn, "index.json", post: post)
   end
 
-  def index(conn, %{"subject" => subject, "tags" => tags}) do
+  def index(conn, %{
+    "page_size" => page_size,
+    "offset" => offset,
+    "subject" => subject,
+    "tags" => tags
+  }) do
     subject = Repo.get_by Subject, name: subject
 
     tag_ids = Repo.all(from t in Tag,
@@ -32,10 +41,16 @@ defmodule LinksApi.PostController do
 
     post = if subject != nil do
         from p in Post,
-          where: p.subject_id == ^subject.id or p.id in ^posts_tags_ids
+          where: p.subject_id == ^subject.id or p.id in ^posts_tags_ids,
+          limit: ^page_size,
+          offset: ^offset,
+          order_by: p.inserted_at
       else
         from p in Post,
-          where: p.id in ^posts_tags_ids
+          where: p.id in ^posts_tags_ids,
+          limit: ^page_size,
+          offset: ^offset,
+          order_by: p.inserted_at
       end
       |> Repo.all
       |> Repo.preload([:user, :subject, :tags])

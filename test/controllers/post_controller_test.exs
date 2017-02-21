@@ -43,6 +43,8 @@ defmodule LinksApi.PostControllerTest do
 
   test "lists all entries matching subject or tags", %{conn: conn} do
     conn = get conn, post_path(conn, :index, %{
+      "page_size" => 20,
+      "offset" => 0,
       "subject" => "PostControllerTestSubject",
       "tags" => ["PostControllerTestTag"]})
     assert json_response(conn, 200)["data"] == []
