@@ -60,7 +60,8 @@ defmodule LinksApi.PostControllerTest do
       "title" => post.title,
       "href" => post.href,
       "subject" => post.subject.name,
-      "tags" => Enum.map(post.tags, fn(tag) -> tag.name end)}
+      "tags" => Enum.map(post.tags, fn(tag) -> tag.name end),
+      "stars" => 0}
   end
 
   test "renders page not found when id is nonexistent", %{conn: conn} do
@@ -87,6 +88,13 @@ defmodule LinksApi.PostControllerTest do
     id = json_response(conn, 200)["data"]["id"]
     assert id
     assert Repo.get(Post, id)
+  end
+
+  test "stars posts and renders new posts", %{conn: conn, valid_attrs: valid_attrs} do
+    post = Repo.insert!(Post.changeset(%Post{}, valid_attrs))
+    conn = post conn, post_path(conn, :star, post)
+    stars = json_response(conn, 200)["data"]["stars"]
+    assert stars == 1
   end
 
   test "does not update chosen resource and renders errors when data is invalid", %{conn: conn, valid_attrs: valid_attrs} do

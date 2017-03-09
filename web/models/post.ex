@@ -8,6 +8,7 @@ defmodule LinksApi.Post do
     belongs_to :user, LinksApi.User, on_replace: :nilify
     belongs_to :subject, LinksApi.Subject, on_replace: :nilify
     many_to_many :tags, LinksApi.Tag, join_through: LinksApi.PostsTags, on_delete: :nothing
+    has_many :stars, LinksApi.Star, on_delete: :nothing
 
     timestamps()
   end
@@ -29,7 +30,7 @@ defmodule LinksApi.Post do
     else
       subject
     end
-    
+
     put_assoc(struct, :subject, LinksApi.Subject.get_subject(subject))
   end
 

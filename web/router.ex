@@ -20,5 +20,6 @@ defmodule LinksApi.Router do
 
     #Posts
     resources "/posts", PostController
+    post "/post/:id/star", PostController, :star
   end
 end

@@ -6,7 +6,7 @@ defmodule LinksApi.PostController do
   alias LinksApi.Subject
   alias LinksApi.PostsTags
 
-  plug LinksApi.Plug.Authenticate when action in [:create, :update, :delete]
+  plug LinksApi.Plug.Authenticate when action in [:create, :update, :delete, :star]
 
   def index(conn, %{
     "page_size" => page_size,
@@ -18,7 +18,7 @@ defmodule LinksApi.PostController do
       order_by: p.inserted_at
     )
     |> Repo.all
-    |> Repo.preload([:user, :subject, :tags])
+    |> Repo.preload([:user, :subject, :tags, :stars])
 
     render(conn, "index.json", post: post)
   end
@@ -53,7 +53,7 @@ defmodule LinksApi.PostController do
           order_by: p.inserted_at
       end
       |> Repo.all
-      |> Repo.preload([:user, :subject, :tags])
+      |> Repo.preload([:user, :subject, :tags, :stars])
 
     render(conn, "index.json", post: post)
   end
@@ -66,7 +66,7 @@ defmodule LinksApi.PostController do
     case Repo.insert(changeset) do
       {:ok, post} ->
         post = post
-          |> Repo.preload([:user, :subject, :tags])
+          |> Repo.preload([:user, :subject, :tags, :stars])
 
         conn
         |> put_status(:created)
@@ -79,15 +79,30 @@ defmodule LinksApi.PostController do
     end
   end
 
+  def star(conn, %{"id" => id}) do
+    {id, _} = Integer.parse(id)
+
+    case LinksApi.Star.star(id, conn.assigns[:current_user].id) do
+      {:ok, _star} ->
+        post = Repo.get!(Post, id)
+          |> Repo.preload([:user, :subject, :tags, :stars])
+        render(conn, "show.json", post: post)
+      {:error, changeset} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> render(LinksApi.ChangesetView, "error.json", changeset: changeset)
+    end
+  end
+
   def show(conn, %{"id" => id}) do
     post = Repo.get!(Post, id)
-      |> Repo.preload([:user, :subject, :tags])
+      |> Repo.preload([:user, :subject, :tags, :stars])
     render(conn, "show.json", post: post)
   end
 
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Repo.get!(Post, id)
-      |> Repo.preload([:user, :subject, :tags])
+      |> Repo.preload([:user, :subject, :tags, :stars])
 
     if post.user.id == conn.assigns[:current_user].id do
       changeset = Post.changeset(post, post_params)
@@ -95,7 +110,7 @@ defmodule LinksApi.PostController do
       case Repo.update(changeset) do
         {:ok, post} ->
           post = post
-            |> Repo.preload([:user, :subject, :tags])
+            |> Repo.preload([:user, :subject, :tags, :stars])
           render(conn, "show.json", post: post)
         {:error, changeset} ->
           conn

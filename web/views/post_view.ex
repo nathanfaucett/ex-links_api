@@ -14,6 +14,7 @@ defmodule LinksApi.PostView do
       title: post.title,
       href: post.href,
       subject: post.subject.name,
-      tags: render_many(post.tags, LinksApi.TagView, "tag.json")}
+      tags: render_many(post.tags, LinksApi.TagView, "tag.json"),
+      stars: length(post.stars)}
   end
 end
