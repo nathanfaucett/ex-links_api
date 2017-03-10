@@ -84,18 +84,16 @@ defmodule LinksApi.PostController do
     tags = Map.values(tags)
 
     tag_ids = Repo.all(from t in Tag,
-      where: t.name in ^tags)
-      |> Enum.map(fn(tag) -> tag.id end)
+      where: t.name in ^tags,
+      select: t.id)
 
     posts_tags_ids = Repo.all(from pt in PostsTags,
-      where: pt.tag_id in ^tag_ids)
-      |> Enum.map(fn(post_tag) -> post_tag.post_id end)
+      where: pt.tag_id in ^tag_ids,
+      select: pt.post_id)
 
     post = if subject != nil do
         from p in Post,
           where: p.subject_id == ^subject.id or p.id in ^posts_tags_ids,
-          limit: ^page_size,
-          offset: ^offset,
           limit: ^page_size,
           offset: ^offset,
           left_join: star in assoc(p, :stars),
@@ -105,8 +103,6 @@ defmodule LinksApi.PostController do
       else
         from p in Post,
           where: p.id in ^posts_tags_ids,
-          limit: ^page_size,
-          offset: ^offset,
           limit: ^page_size,
           offset: ^offset,
           left_join: star in assoc(p, :stars),
@@ -196,7 +192,7 @@ defmodule LinksApi.PostController do
 
   def delete(conn, %{"id" => id}) do
     post = Repo.get!(Post, id)
-      |> Repo.preload(:user)
+      |> Repo.preload([:user, :subject, :tags, :stars])
 
     if post.user.id == conn.assigns[:current_user].id do
       Repo.delete!(post)

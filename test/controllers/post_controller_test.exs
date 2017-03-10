@@ -37,7 +37,7 @@ defmodule LinksApi.PostControllerTest do
   end
 
   test "lists all entries on index", %{conn: conn} do
-    conn = get conn, post_path(conn, :index, %{"page_size" => 20, "offset" => 0})
+    conn = get conn, post_path(conn, :index, %{"page_size" => 20, "offset" => 0, "order_by_stars" => true})
     assert json_response(conn, 200)["data"] == []
   end
 
@@ -46,7 +46,7 @@ defmodule LinksApi.PostControllerTest do
       "page_size" => 20,
       "offset" => 0,
       "subject" => "PostControllerTestSubject",
-      "tags" => ["PostControllerTestTag"]})
+      "tags" => ["PostControllerTestTag", "All"]})
     assert json_response(conn, 200)["data"] == []
   end
 

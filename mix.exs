@@ -60,7 +60,8 @@ defmodule LinksApi.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+    ["ecto.core": ["ecto.create", "ecto.migrate"],
+     "ecto.setup": ["ecto.core", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
      "setup": ["deps.get", "ecto.reset"],
      "test": ["ecto.create --quiet", "ecto.migrate", "test"]]

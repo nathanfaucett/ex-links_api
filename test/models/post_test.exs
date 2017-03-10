@@ -7,7 +7,7 @@ defmodule LinksApi.PostTest do
     title: "Title",
     href: "http://www.example.com",
     subject: "PostTestSubject",
-    tags: ["PostTestTag"]}
+    tags: ["PostTestTag", "All"]}
   @invalid_attrs %{subject: "invalid_subject", tags: []}
 
   @user_attrs %{
