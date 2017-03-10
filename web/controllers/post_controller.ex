@@ -68,6 +68,8 @@ defmodule LinksApi.PostController do
         post = post
           |> Repo.preload([:user, :subject, :tags, :stars])
 
+        broadcast("create", post);
+
         conn
         |> put_status(:created)
         |> put_resp_header("location", post_path(conn, :show, post))
@@ -86,6 +88,9 @@ defmodule LinksApi.PostController do
       {:ok, _star} ->
         post = Repo.get!(Post, id)
           |> Repo.preload([:user, :subject, :tags, :stars])
+
+        broadcast("update", post);
+
         render(conn, "show.json", post: post)
       {:error, changeset} ->
         conn
@@ -111,6 +116,9 @@ defmodule LinksApi.PostController do
         {:ok, post} ->
           post = post
             |> Repo.preload([:user, :subject, :tags, :stars])
+
+          broadcast("update", post);
+
           render(conn, "show.json", post: post)
         {:error, changeset} ->
           conn
@@ -130,11 +138,17 @@ defmodule LinksApi.PostController do
 
     if post.user.id == conn.assigns[:current_user].id do
       Repo.delete!(post)
+      broadcast("delete", post);
       send_resp(conn, :no_content, "")
     else
       conn
         |> put_status(:unauthorized)
         |> render(LinksApi.ErrorView, "401.json")
     end
+  end
+
+  defp broadcast(event, post) do
+    json = LinksApi.PostView.render("post.json", %{post: post});
+    LinksApi.Endpoint.broadcast("posts", event, json)
   end
 end
