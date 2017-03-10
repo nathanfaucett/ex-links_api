@@ -13,20 +13,6 @@ config :links_api, LinksApi.Endpoint,
   check_origin: false,
   watchers: []
 
-config :links_api, LinksApi.Editor,
-  books_path: "./books"
-
-
-# Watch static and templates for browser reloading.
-config :links_api, LinksApi.Endpoint,
-  live_reload: [
-    patterns: [
-      ~r{priv/gettext/.*(po)$},
-      ~r{web/views/.*(ex)$},
-      ~r{web/templates/.*(eex)$}
-    ]
-  ]
-
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

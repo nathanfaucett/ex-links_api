@@ -13,11 +13,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :links_api, LinksApi.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/manifest.json"
-
-config :links_api, LinksApi.Editor,
-  books_path: "/home/links_api/books"
+  url: [host: "example.com", port: 80]
 
 # Do not print debug messages in production
 config :logger, level: :info

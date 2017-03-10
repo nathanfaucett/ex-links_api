@@ -10,9 +10,6 @@ config :links_api, LinksApi.Endpoint,
   http: [port: 3001],
   server: false
 
-config :links_api, LinksApi.Editor,
-  books_path: "./books"
-
 # Print only warnings and errors during test
 config :logger, level: :warn
 
