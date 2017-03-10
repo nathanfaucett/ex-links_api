@@ -27,7 +27,8 @@ defmodule LinksApi.Mixfile do
        :comeonin,
        :secure_random,
        :bamboo_smtp,
-       :bamboo]]
+       :bamboo,
+       :edeliver]]
   end
 
   # Specifies which paths to compile per environment.
@@ -50,7 +51,8 @@ defmodule LinksApi.Mixfile do
      {:bamboo_smtp, "~> 1.2"},
      {:cowboy, "~> 1.1"},
      {:poison, "~> 2.0"},
-     {:exrm, "~> 1.0"}]
+     {:edeliver, "~> 1.4.2"},
+     {:distillery, ">= 0.8.0", warn_missing: false}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
