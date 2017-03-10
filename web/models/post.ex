@@ -14,7 +14,7 @@ defmodule LinksApi.Post do
   end
 
   def put_tags(struct, params) do
-    tags = Map.get(params, :tags, Map.get(params, "tags", []))
+    tags = Enum.uniq(Map.get(params, :tags, Map.get(params, "tags", ["All"])) ++ ["All"])
 
     if Enum.empty?(tags) do
       struct

@@ -1,5 +1,6 @@
 defmodule LinksApi.PostController do
   use LinksApi.Web, :controller
+  require Logger
 
   alias LinksApi.Post
   alias LinksApi.Tag
@@ -10,15 +11,21 @@ defmodule LinksApi.PostController do
 
   def index(conn, %{
     "page_size" => page_size,
-    "offset" => offset
+    "offset" => offset,
+    "order_by_stars" => "true"
   }) do
     post = from(p in Post,
       limit: ^page_size,
       offset: ^offset,
-      order_by: p.inserted_at
+      left_join: star in assoc(p, :stars),
+      order_by: [desc: count(star.id), desc: p.inserted_at],
+      group_by: p.id,
+      select: p
     )
     |> Repo.all
     |> Repo.preload([:user, :subject, :tags, :stars])
+
+    Logger.debug "index pop"
 
     render(conn, "index.json", post: post)
   end
@@ -26,10 +33,55 @@ defmodule LinksApi.PostController do
   def index(conn, %{
     "page_size" => page_size,
     "offset" => offset,
+    "order_by_stars" => "false"
+  }) do
+    post = from(p in Post,
+      limit: ^page_size,
+      offset: ^offset,
+      order_by: [desc: p.inserted_at]
+    )
+    |> Repo.all
+    |> Repo.preload([:user, :subject, :tags, :stars])
+
+    Logger.debug "index newest"
+
+    render(conn, "index.json", post: post)
+  end
+
+  def index(conn, %{
+    "page_size" => page_size,
+    "offset" => offset,
+    "subject" => subject
+  }) do
+    search(conn, %{
+      "page_size" => page_size,
+      "offset" => offset,
+      "subject" => subject,
+      "tags" => %{"0" => "All"}
+    })
+  end
+  def index(conn, %{
+    "page_size" => page_size,
+    "offset" => offset,
+    "subject" => subject,
+    "tags" => tags
+  }) do
+    search(conn, %{
+      "page_size" => page_size,
+      "offset" => offset,
+      "subject" => subject,
+      "tags" => tags
+    })
+  end
+
+  defp search(conn, %{
+    "page_size" => page_size,
+    "offset" => offset,
     "subject" => subject,
     "tags" => tags
   }) do
     subject = Repo.get_by Subject, name: subject
+    tags = Map.values(tags)
 
     tag_ids = Repo.all(from t in Tag,
       where: t.name in ^tags)
@@ -44,13 +96,23 @@ defmodule LinksApi.PostController do
           where: p.subject_id == ^subject.id or p.id in ^posts_tags_ids,
           limit: ^page_size,
           offset: ^offset,
-          order_by: p.inserted_at
+          limit: ^page_size,
+          offset: ^offset,
+          left_join: star in assoc(p, :stars),
+          order_by: [desc: count(star.id), desc: p.inserted_at],
+          group_by: p.id,
+          select: p
       else
         from p in Post,
           where: p.id in ^posts_tags_ids,
           limit: ^page_size,
           offset: ^offset,
-          order_by: p.inserted_at
+          limit: ^page_size,
+          offset: ^offset,
+          left_join: star in assoc(p, :stars),
+          order_by: [desc: count(star.id), desc: p.inserted_at],
+          group_by: p.id,
+          select: p
       end
       |> Repo.all
       |> Repo.preload([:user, :subject, :tags, :stars])
