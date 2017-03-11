@@ -14,10 +14,6 @@ use Mix.Config
 config :links_api, LinksApi.Endpoint,
   http: [port: System.get_env("PORT")],
   check_origin: ["//*.hackertarian.com"],
-  url: [host: "api.links.hackertarian.com", port: 80]
-
-config :phoenix_distillery, PhoenixDistillery.Endpoint,
-  http: [port: System.get_env("PORT")],
   url: [host: "localhost", port: System.get_env("PORT")],
   server: true,
   root: ".",
