@@ -8,6 +8,7 @@ config :comeonin, :pbkdf2_rounds, 1
 # you can enable the server option below.
 config :links_api, LinksApi.Endpoint,
   http: [port: 3001],
+  check_origin: false,
   server: false
 
 # Print only warnings and errors during test
