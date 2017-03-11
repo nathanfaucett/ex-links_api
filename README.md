@@ -9,7 +9,7 @@ To start your Phoenix app:
   * Install Node.js dependencies with `npm install`
   * Start Phoenix endpoint with `mix phoenix.server`
 
-api up at [`localhost:3000`](http://localhost:3000)
+api up at [`127.0.0.1:3000`](http://127.0.0.1:3000)
 
 Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
 
@@ -26,7 +26,7 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
 an SMTP server is required to send emails, I'm using [FakeSMTP](https://nilhcem.github.io/FakeSMTP/)
 
 ```bash
-export SMTP_SERVER="localhost"
+export SMTP_SERVER="127.0.0.1"
 export SMTP_PORT=1025
 export SMTP_USERNAME=""
 export SMTP_PASSWORD=""

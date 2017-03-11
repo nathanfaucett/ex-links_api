@@ -19,5 +19,5 @@ config :links_api, LinksApi.Repo,
   username: "postgres",
   password: "postgres",
   database: "links_api_test",
-  hostname: "localhost",
+  hostname: "127.0.0.1",
   pool: Ecto.Adapters.SQL.Sandbox
