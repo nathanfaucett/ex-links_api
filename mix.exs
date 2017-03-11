@@ -19,7 +19,7 @@ defmodule LinksApi.Mixfile do
   def application do
     [mod: {LinksApi, []},
       applications: [
-       :phoenix, :phoenix_pubsub,
+       :phoenix, :phoenix_pubsub, :phoenix_html,
        :cowboy, :logger,
        :gettext,
        :phoenix_ecto, :postgrex,
@@ -28,7 +28,8 @@ defmodule LinksApi.Mixfile do
        :secure_random,
        :bamboo_smtp,
        :bamboo,
-       :edeliver]]
+       :edeliver,
+       :elixir_make]]
   end
 
   # Specifies which paths to compile per environment.
