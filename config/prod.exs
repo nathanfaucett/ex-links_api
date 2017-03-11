@@ -16,6 +16,13 @@ config :links_api, LinksApi.Endpoint,
   check_origin: ["//*.hackertarian.com"],
   url: [host: "api.links.hackertarian.com", port: 80]
 
+config :phoenix_distillery, PhoenixDistillery.Endpoint,
+  http: [port: System.get_env("PORT")],
+  url: [host: "localhost", port: System.get_env("PORT")],
+  server: true,
+  root: ".",
+  version: Mix.Project.config[:version]
+
 # Do not print debug messages in production
 config :logger, level: :info
 
