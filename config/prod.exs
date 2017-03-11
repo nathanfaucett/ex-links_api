@@ -13,7 +13,7 @@ use Mix.Config
 # which you typically run after static files are built.
 config :links_api, LinksApi.Endpoint,
   http: [port: {:system, "PORT"}],
-  url: [host: "api.links.hackertarian.com", port: 80]
+  url: [host: "api.links.hackertarian.com", port: System.get_env("PORT")]
 
 # Do not print debug messages in production
 config :logger, level: :info
