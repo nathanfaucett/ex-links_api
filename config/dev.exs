@@ -26,5 +26,5 @@ config :links_api, LinksApi.Repo,
   username: "postgres",
   password: "postgres",
   database: "links_api_dev",
-  hostname: "127.0.0.1",
+  hostname: "localhost",
   pool_size: 10
