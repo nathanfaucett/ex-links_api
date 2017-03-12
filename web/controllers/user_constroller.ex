@@ -15,10 +15,16 @@ defmodule LinksApi.UserController do
         session_changeset = Session.registration_changeset(%Session{}, %{user_id: user.id})
         {:ok, session} = Repo.insert(session_changeset)
 
-        LinksApi.Email.confirmation_html_email(%{
+        mail = LinksApi.Email.confirmation_html_email(%{
           email: user.email,
           token: user.confirmation_token
-        }) |> LinksApi.Mailer.deliver_now
+        })
+
+        if Mix.env == :prod do
+          LinksApi.Mailer.deliver_later(mail)
+        else
+          LinksApi.Mailer.deliver_now(mail)
+        end
 
         conn
           |> put_status(:created)
@@ -75,10 +81,16 @@ defmodule LinksApi.UserController do
     case Repo.update(changeset) do
       {:ok, user} ->
 
-        LinksApi.Email.confirmation_html_email(%{
+        mail = LinksApi.Email.confirmation_html_email(%{
           email: user.email,
           token: confirmation_token
-        }) |> LinksApi.Mailer.deliver_now
+        })
+
+        if Mix.env == :prod do
+          LinksApi.Mailer.deliver_later(mail)
+        else
+          LinksApi.Mailer.deliver_now(mail)
+        end
 
         conn
           |> put_status(:no_content)
