@@ -29,7 +29,7 @@ defmodule LinksApi.Session do
   end
 
   def get_session(conn) do
-    case get_req_header(conn, "x-links-user.token") do
+    case get_req_header(conn, "x-links-user_token") do
       [token] ->
           LinksApi.Repo.get_by(LinksApi.Session, token: token)
       _ ->
