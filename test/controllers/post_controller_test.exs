@@ -31,7 +31,7 @@ defmodule LinksApi.PostControllerTest do
     conn = conn
       |> assign(:current_user, user)
       |> put_req_header("accept", "application/json")
-      |> put_req_header("x-links-user_token", session.token)
+      |> put_req_header("x-links-user-token", session.token)
 
     {:ok, conn: conn, user: user, valid_attrs: valid_attrs}
   end
