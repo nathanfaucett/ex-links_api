@@ -3,11 +3,10 @@ defmodule LinksApi.Mixfile do
 
   def project do
     [app: :links_api,
-     version: (if Mix.env == :prod, do: System.get_env("APP_VERSION"), else: "0.0.1"),
-     elixir: "~> 1.2",
+     version: "0.0.1",
+     elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-     build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
      deps: deps()]
@@ -17,43 +16,28 @@ defmodule LinksApi.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {LinksApi, []},
-      applications: [
-       :phoenix, :phoenix_pubsub, :phoenix_html,
-       :cowboy, :logger,
-       :gettext,
-       :phoenix_ecto, :postgrex,
-       :cors_plug,
-       :comeonin,
-       :secure_random,
-       :bamboo_smtp,
-       :bamboo,
-       :edeliver,
-       :elixir_make]]
+    [mod: {LinksApi.Application, []},
+     extra_applications: [
+       :logger, :runtime_tools,
+       :oauth2]]
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "web", "test/support"]
-  defp elixirc_paths(_),     do: ["lib", "web"]
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
+  defp elixirc_paths(_),     do: ["lib"]
 
   # Specifies your project dependencies.
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2"},
+    [{:phoenix, "~> 1.3.0-rc"},
      {:phoenix_pubsub, "~> 1.0"},
      {:phoenix_ecto, "~> 3.2"},
-     {:postgrex, ">= 0.13.0"},
-     {:gettext, "~> 0.13"},
-     {:comeonin, "~> 3.0"},
-     {:secure_random, "~> 0.5"},
+     {:postgrex, ">= 0.0.0"},
+     {:gettext, "~> 0.11"},
+     {:cowboy, "~> 1.0"},
      {:cors_plug, "~> 1.2"},
-     {:bamboo, "~> 0.8"},
-     {:bamboo_smtp, "~> 1.2"},
-     {:cowboy, "~> 1.1"},
-     {:poison, "~> 2.0"},
-     {:edeliver, "~> 1.4.2"},
-     {:distillery, ">= 0.8.0", warn_missing: false}]
+     {:oauth2, "~> 0.9"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
@@ -63,10 +47,8 @@ defmodule LinksApi.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["ecto.core": ["ecto.create", "ecto.migrate"],
-     "ecto.setup": ["ecto.core", "run priv/repo/seeds.exs"],
+    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
      "ecto.reset": ["ecto.drop", "ecto.setup"],
-     "setup": ["deps.get", "ecto.reset"],
      "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
   end
 end

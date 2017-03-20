@@ -1,8 +1,0 @@
-<p>Welcome to Links <%= @email %>!</p>
-
-<p>
-  Click here to confirm you email
-  <a href="http://links.hackertarian.com/#/users/confirm/<%= @token %>">
-    <%= @email %>
-  </a>
-</p>

@@ -1,14 +1,9 @@
 use Mix.Config
 
-
-config :comeonin, :bcrypt_log_rounds, 4
-config :comeonin, :pbkdf2_rounds, 1
-
 # We don't run a server during test. If one is required,
 # you can enable the server option below.
-config :links_api, LinksApi.Endpoint,
+config :links_api, LinksApi.Web.Endpoint,
   http: [port: 3001],
-  check_origin: ["//*.hackertarian.com"],
   server: false
 
 # Print only warnings and errors during test

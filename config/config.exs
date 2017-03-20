@@ -10,11 +10,10 @@ config :links_api,
   ecto_repos: [LinksApi.Repo]
 
 # Configures the endpoint
-config :links_api, LinksApi.Endpoint,
-  url: [host: "api.links.hackertarian.com"],
-  check_origin: ["//*.hackertarian.com"],
-  secret_key_base: "YWpgJU2jiOBkTz38ifDO9QoJNLuMeZXyecdlAQ01LWOa9P/ZF61jbgMmPO82EgbG",
-  render_errors: [view: LinksApi.ErrorView, accepts: ~w(json)],
+config :links_api, LinksApi.Web.Endpoint,
+  url: [host: "localhost"],
+  secret_key_base: "S1JPItKfCccin85OAFMrzagMACgVUO6DJmLlbIcN+qAOaYatwrZkZrBVLU2VMWQN",
+  render_errors: [view: LinksApi.Web.ErrorView, accepts: ~w(json)],
   pubsub: [name: LinksApi.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
@@ -23,19 +22,16 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
+config :links_api, LinksApi.Web.OAuth2.Github,
+  client_id: System.get_env("GITHUB_CLIENT_ID"),
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
+  redirect_uri: System.get_env("GITHUB_REDIRECT_URI")
+
+config :links_api, LinksApi.Web.OAuth2.Google,
+  client_id: System.get_env("GOOGLE_CLIENT_ID"),
+  client_secret: System.get_env("GOOGLE_CLIENT_SECRET"),
+  redirect_uri: System.get_env("GOOGLE_REDIRECT_URI")
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
-
-
-{smtp_port, _} = Integer.parse(System.get_env("SMTP_PORT"))
-
-config :links_api, LinksApi.Mailer,
-  adapter: Bamboo.SMTPAdapter,
-  server: System.get_env("SMTP_SERVER"),
-  port: smtp_port,
-  username: System.get_env("SMTP_USERNAME"),
-  password: System.get_env("SMTP_PASSWORD"),
-  tls: :if_available, # can be `:always` or `:never`
-  ssl: false, # can be `true`
-  retries: 1

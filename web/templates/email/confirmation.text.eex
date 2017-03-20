@@ -1,3 +1,0 @@
-Welcome to Links <%= @email %>!
-
-Follow this link to confirm you email http://links.hackertarian.com/#/users/confirm/<%= @token %>

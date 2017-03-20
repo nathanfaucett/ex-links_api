@@ -1,15 +1,12 @@
-# LinksApi [![Build Status](https://travis-ci.org/nathanfaucett/ex-links_api.svg?branch=master)](https://travis-ci.org/nathanfaucett/ex-links_api)
+# LinksApi
 
-user voted links api
-
-To start your Phoenix app:
+To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
-  * Install Node.js dependencies with `npm install`
-  * Start Phoenix endpoint with `mix phoenix.server`
+  * Start Phoenix endpoint with `mix phx.server`
 
-api up at [`127.0.0.1:3000`](http://127.0.0.1:3000)
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
 
@@ -20,14 +17,3 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: https://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
-
-##  envrc
-
-an SMTP server is required to send emails, I'm using [FakeSMTP](https://nilhcem.github.io/FakeSMTP/)
-
-```bash
-export SMTP_SERVER="127.0.0.1"
-export SMTP_PORT=1025
-export SMTP_USERNAME=""
-export SMTP_PASSWORD=""
-```
