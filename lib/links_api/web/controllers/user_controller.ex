@@ -97,10 +97,10 @@ defmodule LinksApi.Web.UserController do
 
   defp get_user!("github", client) do
     %{body: user} = OAuth2.Client.get!(client, "/user")
-    %{id: user["id"], email: user["email"]}
+    %{email: user["email"]}
   end
   defp get_user!("google", client) do
-    {:ok, %{body: user}} = OAuth2.Client.get!(client, "https://www.googleapis.com/plus/v1/people/me/openIdConnect")
-    %{id: user["id"], email: user["email"]}
+    %OAuth2.Response{body: user} = OAuth2.Client.get!(client, "https://www.googleapis.com/oauth2/v1/userinfo")
+    %{email: user["email"]}
   end
 end

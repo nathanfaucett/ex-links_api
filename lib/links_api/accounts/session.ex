@@ -4,7 +4,7 @@ defmodule LinksApi.Accounts.Session do
   @primary_key {:token, :string, []}
   schema "accounts_sessions" do
     belongs_to :user, LinksApi.Accounts.User
-    
+
     timestamps()
   end
 end

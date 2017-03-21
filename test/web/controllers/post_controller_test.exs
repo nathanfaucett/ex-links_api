@@ -5,7 +5,7 @@ defmodule LinksApi.Web.PostControllerTest do
   alias LinksApi.Posts
   alias LinksApi.Posts.Post
 
-  @create_user_attrs %{id: 1, email: "example@domain.com"}
+  @create_user_attrs %{email: "example@domain.com"}
   @create_attrs %{title: "some title", href: "http://www.example.com"}
   @update_attrs %{title: "some updated title", href: "http://www.example.com/updated"}
   @invalid_attrs %{title: nil, href: nil}
@@ -19,7 +19,7 @@ defmodule LinksApi.Web.PostControllerTest do
   def put_session(conn, user) do
     {:ok, session} = Accounts.create_session(%{
       user_id: user.id,
-      token: "session-token-" <> Integer.to_string(user.id)
+      token: "token-" <> Integer.to_string(user.id)
     })
     put_req_header(conn, "x-links-user-token", session.token)
   end

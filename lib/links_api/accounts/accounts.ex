@@ -21,7 +21,7 @@ defmodule LinksApi.Accounts do
   end
 
   def get_or_create_user(attrs \\ %{}) do
-    user = Repo.get_by(User, id: attrs.id)
+    user = Repo.get_by(User, email: attrs.email)
 
     if user == nil do
       {:ok, user} = create_user(attrs)
@@ -41,8 +41,8 @@ defmodule LinksApi.Accounts do
 
   defp user_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:id, :email])
-    |> validate_required([:id, :email])
+    |> cast(attrs, [:email])
+    |> validate_required([:email])
   end
 
   alias LinksApi.Accounts.Session
@@ -77,7 +77,6 @@ defmodule LinksApi.Accounts do
   defp session_changeset(%Session{} = session, attrs) do
     session
     |> cast(attrs, [:user_id, :token])
-    |> foreign_key_constraint(:user_id)
     |> validate_required([:user_id, :token])
   end
 end
