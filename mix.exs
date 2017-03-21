@@ -37,7 +37,8 @@ defmodule LinksApi.Mixfile do
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
      {:cors_plug, "~> 1.2"},
-     {:oauth2, "~> 0.9"}]
+     {:oauth2, "~> 0.9"},
+     {:distillery, "~> 1.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

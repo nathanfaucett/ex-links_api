@@ -15,7 +15,9 @@ use Mix.Config
 # which you typically run after static files are built.
 config :links_api, LinksApi.Web.Endpoint,
   on_init: {LinksApi.Web.Endpoint, :load_from_system_env, []},
-  url: [host: "api.links.hackertarian.com", port: 80]
+  http: [port: System.get_env("PORT")],
+  check_origin: ["//*.hackertarian.com"],
+  url: [host: "localhost", port: System.get_env("PORT")]
 
 # Do not print debug messages in production
 config :logger, level: :info
