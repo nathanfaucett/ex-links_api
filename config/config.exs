@@ -11,8 +11,6 @@ config :links_api,
 
 # Configures the endpoint
 config :links_api, LinksApi.Web.Endpoint,
-  url: [host: "api.links.hackertarian.com"],
-  check_origin: ["//*.hackertarian.com"],
   secret_key_base: "S1JPItKfCccin85OAFMrzagMACgVUO6DJmLlbIcN+qAOaYatwrZkZrBVLU2VMWQN",
   render_errors: [view: LinksApi.Web.ErrorView, accepts: ~w(json)],
   pubsub: [name: LinksApi.PubSub,
