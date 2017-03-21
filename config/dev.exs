@@ -8,6 +8,7 @@ use Mix.Config
 # with brunch.io to recompile .js and .css sources.
 config :links_api, LinksApi.Web.Endpoint,
   http: [port: 3000],
+  check_origin: ["//*"],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,

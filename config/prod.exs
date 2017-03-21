@@ -16,8 +16,11 @@ use Mix.Config
 config :links_api, LinksApi.Web.Endpoint,
   on_init: {LinksApi.Web.Endpoint, :load_from_system_env, []},
   http: [port: System.get_env("PORT")],
+  url: [host: "localhost", port: System.get_env("PORT")],
   check_origin: ["//*.hackertarian.com"],
-  url: [host: "localhost", port: System.get_env("PORT")]
+  server: true,
+  root: ".",
+  version: Mix.Project.config[:version]
 
 # Do not print debug messages in production
 config :logger, level: :info
