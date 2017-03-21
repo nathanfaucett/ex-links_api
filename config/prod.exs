@@ -18,9 +18,7 @@ config :links_api, LinksApi.Web.Endpoint,
   http: [port: System.get_env("PORT")],
   url: [host: "localhost", port: System.get_env("PORT")],
   check_origin: ["//*.hackertarian.com"],
-  server: true,
-  root: ".",
-  version: Mix.Project.config[:version]
+  server: true
 
 # Do not print debug messages in production
 config :logger, level: :info
